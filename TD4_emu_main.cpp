@@ -7,10 +7,15 @@
 
 
 TD4_emulator* init_registers(){
-    TD4_emulator *emu = (TD4_emulator*)malloc(sizeof(TD4_emulator));
-    memset(emu->registers, 0x41, sizeof(emu->registers));
+    TD4_emulator *emu = new TD4_emulator;
     cout << "init registers" << endl;
     return emu;
+}
+
+void Delete_emu(TD4_emulator* emu){
+    delete emu->memory;
+    delete emu;
+    cout << "delete emulator" << endl;
 }
 
 int main(){
@@ -19,5 +24,6 @@ int main(){
     emu = init_registers();
     dump_registers(emu);
     init_instructions();
+    Delete_emu(emu);
     return 0;
 }
