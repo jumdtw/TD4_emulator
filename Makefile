@@ -1,5 +1,5 @@
-CC = gcc
-OBJS = TD4_emu.o
+CC = g++
+OBJS = TD4_emu_main.o instruction.o debug.o
 CFLAGS += -Wall -g
 TARGET = TD4.exe
 #BINFILE = binfile
