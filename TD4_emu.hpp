@@ -20,7 +20,7 @@ public:
             registers[i] = 0x00;
         }
         memory = (unsigned char*)malloc(16);
-        memset(memory,0x00,16);
+        memset(memory,0x20,16);
     }
 };
 

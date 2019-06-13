@@ -3,7 +3,6 @@
 #include<bitset>
 
 void dump_registers(TD4_emulator *emu){
-    cout << "\n" << endl;
     cout << "----------registers dump-----------" << endl;
     cout << "Register A  = " << bitset<8>(emu->registers[A]) << endl;
     cout << "Register B  = " << bitset<8>(emu->registers[B]) << endl;
@@ -14,13 +13,12 @@ void dump_registers(TD4_emulator *emu){
     return;
 }
 
-void dump_memory(TD4_emulator *emu){
-    cout << "\n" << endl;
+void dump_memory(TD4_emulator *emu){  
     cout << "-----------memory dump ---------" << endl;
     for(int i=0;i<16;i++){
         cout << "memory " << i  << " = " << bitset<8>(emu->memory[i]) << endl; 
     }
-    cout << "--------------------------------" << endl;
-    cout << "\n" << endl;
+    cout << "--------------------------------" << endl; 
+    cout << "\n" << endl; 
     return;
 }

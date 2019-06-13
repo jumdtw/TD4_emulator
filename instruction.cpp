@@ -6,6 +6,8 @@
 instruction_list* instructions[64];
 
 static void add_A_Im(TD4_emulator *emu){
+    unsigned char Mcode = emu->memory[emu->registers[C]];
+    unsigned char ImDate = (Mcode << 4) >> 4;
     cout << "execute add A Im" << endl;
 }
 
@@ -18,6 +20,8 @@ static void in_A(TD4_emulator *emu){
 }
 
 static void mov_A_Im(TD4_emulator *emu){
+    unsigned char Mcode = emu->memory[emu->registers[C]];
+    unsigned char ImDate = (Mcode << 4) >> 4;
     cout << "execute mov A Im" << endl;
 }
 
@@ -27,6 +31,8 @@ static void mov_B_A(TD4_emulator *emu){
 }
 
 static void add_B_Im(TD4_emulator *emu){
+    unsigned char Mcode = emu->memory[emu->registers[C]];
+    unsigned char ImDate = (Mcode << 4) >> 4;
     cout << "execute add B Im" << endl;
 }
 
@@ -35,6 +41,8 @@ static void in_B(TD4_emulator *emu){
 }
 
 static void mov_B_Im(TD4_emulator *emu){
+    unsigned char Mcode = emu->memory[emu->registers[C]];
+    unsigned char ImDate = (Mcode << 4) >> 4;
     cout << "execute mov B Im" << endl;
 }
 
@@ -54,7 +62,13 @@ static void jmp(TD4_emulator *emu){
     cout << "execute jmp" << endl;
 }
 
+static void nop(TD4_emulator *emu){
+    cout << "execute nop" << endl;
+}
+
 void init_instructions(){
+    //0x2 is escape code 
+    instructions[0x2] = nop;
     instructions[0x3] = add_A_Im; 
     instructions[0x7] = mov_B_Im;
     instructions[0x1] = mov_A_B;
