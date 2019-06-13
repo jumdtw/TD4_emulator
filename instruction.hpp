@@ -7,6 +7,7 @@ void init_instructions();
 
 typedef void instruction_list(TD4_emulator*);
 
-extern instruction_list* instructions[13*4];
+//2 ^ 6
+extern instruction_list* instructions[64];
 
 #endif
