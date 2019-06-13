@@ -15,6 +15,8 @@ class TD4_emulator{
 public:
     unsigned char registers[EGISTERS_COUNT];
     unsigned char *memory;
+    unsigned char input_date = 0x8;
+    bool Cflag = false;
     TD4_emulator(){
         for(int i=0;i<EGISTERS_COUNT;i++){
             registers[i] = 0x00;

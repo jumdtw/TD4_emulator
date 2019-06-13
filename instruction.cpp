@@ -1,3 +1,4 @@
+#include<bitset>
 #include"graphic.hpp"
 #include"TD4_emu.hpp"
 #include"instruction.hpp"
@@ -6,22 +7,34 @@
 instruction_list* instructions[64];
 
 static void add_A_Im(TD4_emulator *emu){
-    unsigned char Mcode = emu->memory[emu->registers[C]];
-    unsigned char ImDate = (Mcode << 4) >> 4;
+    unsigned char buf_low_4bit,Mcode = emu->memory[emu->registers[C]];
+    buf_low_4bit = Mcode << 4;
+    unsigned char ImDate = buf_low_4bit >> 4;
+    emu->registers[A] += ImDate;
+    buf_low_4bit = 0x00;
+    if(emu->registers[A] >= 0x100){
+        emu->Cflag = true;
+        buf_low_4bit = (emu->registers[A] << 4) >> 4;
+        emu->registers[A] = buf_low_4bit;
+    }
     cout << "execute add A Im" << endl;
 }
 
 static void mov_A_B(TD4_emulator *emu){
+    emu->registers[A] = emu->registers[B];
     cout << "execute mov A B" << endl;
 }
 
 static void in_A(TD4_emulator *emu){
+    emu->registers[A] = emu->input_date;
     cout << "execute in A" << endl;
 }
 
 static void mov_A_Im(TD4_emulator *emu){
-    unsigned char Mcode = emu->memory[emu->registers[C]];
-    unsigned char ImDate = (Mcode << 4) >> 4;
+    unsigned char buf_low_4bit,Mcode = emu->memory[emu->registers[C]];
+    buf_low_4bit = Mcode << 4;
+    unsigned char ImDate = buf_low_4bit >> 4;
+    emu->registers[A] = ImDate;
     cout << "execute mov A Im" << endl;
 }
 
@@ -31,34 +44,58 @@ static void mov_B_A(TD4_emulator *emu){
 }
 
 static void add_B_Im(TD4_emulator *emu){
-    unsigned char Mcode = emu->memory[emu->registers[C]];
-    unsigned char ImDate = (Mcode << 4) >> 4;
+    unsigned char buf_low_4bit,Mcode = emu->memory[emu->registers[C]];
+    buf_low_4bit = Mcode << 4;
+    unsigned char ImDate = buf_low_4bit >> 4;
+    emu->registers[B] += ImDate;
     cout << "execute add B Im" << endl;
 }
 
 static void in_B(TD4_emulator *emu){
+    emu->registers[B] = emu->input_date;
     cout << "execute in B" << endl;
 }
 
 static void mov_B_Im(TD4_emulator *emu){
-    unsigned char Mcode = emu->memory[emu->registers[C]];
-    unsigned char ImDate = (Mcode << 4) >> 4;
+    unsigned char buf_low_4bit,Mcode = emu->memory[emu->registers[C]];
+    buf_low_4bit = Mcode << 4;
+    unsigned char ImDate = buf_low_4bit >> 4;
+    emu->registers[B] = ImDate;
     cout << "execute mov B Im" << endl;
 }
 
 static void out_B(TD4_emulator *emu){
+    emu->registers[D] = emu->registers[B];
     cout << "execute out B" << endl;
 }
 
 static void out_Im(TD4_emulator *emu){
+    unsigned char buf_low_4bit,Mcode = emu->memory[emu->registers[C]];
+    buf_low_4bit = Mcode << 4;
+    unsigned char ImDate = buf_low_4bit >> 4;
+    emu->registers[D] = ImDate;
     cout << "execute out Im" << endl;
 }
 
 static void jnc(TD4_emulator *emu){
+    unsigned char buf_low_4bit,Mcode = emu->memory[emu->registers[C]];
+    buf_low_4bit = Mcode << 4;
+    unsigned char ImDate = buf_low_4bit >> 4;
+    // if Cflag==0 than jmp 
+    if(!emu->Cflag){
+        emu->registers[C] = ImDate;
+    }else{
+        // if exexute jnc, Cflag is zero.
+        emu->Cflag = false;
+    }
     cout << "execute jnc" << endl;
 }
 
 static void jmp(TD4_emulator *emu){
+    unsigned char buf_low_4bit,Mcode = emu->memory[emu->registers[C]];
+    buf_low_4bit = Mcode << 4;
+    unsigned char ImDate = buf_low_4bit >> 4;
+    emu->registers[C] = ImDate;
     cout << "execute jmp" << endl;
 }
 
@@ -67,19 +104,18 @@ static void nop(TD4_emulator *emu){
 }
 
 void init_instructions(){
-    //0x2 is escape code 
-    instructions[0x2] = nop;
-    instructions[0x3] = add_A_Im; 
-    instructions[0x7] = mov_B_Im;
-    instructions[0x1] = mov_A_B;
-    instructions[0x4] = mov_B_A;
-    instructions[0x0] = add_A_Im;
-    instructions[0x5] = in_A;
-    instructions[0x6] = in_B;
-    instructions[0xb] = out_Im;
-    instructions[0x9] = out_B;
-    instructions[0xf] = jmp;
-    instructions[0xe] = jnc;
+    instructions[NOP] = nop;
+    instructions[ADD_A_IM] = add_A_Im; 
+    instructions[MOV_B_IM] = mov_B_Im;
+    instructions[MOV_A_B] = mov_A_B;
+    instructions[MOV_B_A] = mov_B_A;
+    instructions[ADD_B_IM] = add_B_Im;
+    instructions[IN_A] = in_A;
+    instructions[IN_B] = in_B;
+    instructions[OUT_IM] = out_Im;
+    instructions[OUT_B] = out_B;
+    instructions[JMP] = jmp;
+    instructions[JNC] = jnc;
     cout << "init instructions" << endl;
     return;
 }
