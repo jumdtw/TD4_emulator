@@ -21,6 +21,7 @@ void Delete_emu(TD4_emulator* emu){
 
 int main(){
     //init emulator
+    int endflag = 0;
     TD4_emulator *emu;
     cout << "create emulator" << endl;
     emu = init_registers();
@@ -28,11 +29,22 @@ int main(){
     //execute
     cout << "\n" << endl;
     cout << "----------------execute code---------------------" << endl;
-    // A = 0x0f
+    emu->memory[0] = 0x40;
     emu->registers[A] = 0x0f;
+    cout << "set register A" << endl;
     dump_registers(emu);
-    instructions[0x4](emu);
-    dump_registers(emu);
+    while(emu->registers[C]<=0xff&&endflag==0){
+        unsigned char Mcode = emu->memory[emu->registers[C]];
+        unsigned char opcode = Mcode >> 4;
+        instructions[opcode](emu);
+        dump_registers(emu);
+        emu->registers[C]+=0xff;
+        if(emu->registers[C]==0xff){
+            endflag = 1;
+        }
+        
+        //emu->registers[C]++;
+    }
     cout << "-------------------------------------------------" << endl;
     cout << "\n" << endl;
     //end emulator
