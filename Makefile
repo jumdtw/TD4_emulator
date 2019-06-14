@@ -3,7 +3,8 @@ OBJS = TD4_emu_main.o instruction.o debug.o
 HEAD = TD4_emu.hpp
 CFLAGS += -Wall -g
 TARGET = TD4.exe
-#BINFILE = binfile
+BINFILE = TD4bin.td
+RUNOPTION = -d -f 
 DEL = del
 
 %.o : %.c Makefile
@@ -12,8 +13,8 @@ DEL = del
 $(TARGET) : $(OBJS) $(HEAD) Makefile
 	$(CC) -o $@ $(OBJS)
 
-run : $(TARGET) #$(BINFILE)
-	$(TARGET)
+run : $(TARGET) $(BINFILE)
+	$(TARGET) $(RUNOPTION) $(BINFILE)
 
 clean :
 	$(DEL) $(OBJS) 
