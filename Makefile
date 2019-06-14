@@ -16,5 +16,11 @@ $(TARGET) : $(OBJS) $(HEAD) Makefile
 run : $(TARGET) $(BINFILE)
 	$(TARGET) $(RUNOPTION) $(BINFILE)
 
+nodebugrun : $(TARGET) $(BINFILE)
+	$(TARGET) -f $(BINFILE)
+
 clean :
 	$(DEL) $(OBJS) 
+
+delete :
+	$(DEL) $(TARGET)
