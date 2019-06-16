@@ -89,7 +89,7 @@ static void out_Im(TD4_emulator *emu){
     unsigned char ImDate = buf_low_4bit >> 4;
     emu->registers[D] = ImDate;
     emu->registers[C]++;
-    //cout << "execute out Im" << endl;
+    cout << "execute out Im" << endl;
 }
 
 static void jnc(TD4_emulator *emu){

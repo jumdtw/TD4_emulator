@@ -17,10 +17,10 @@ TD4_emulator* init_emulator(){
 
 char onbit_register(char D){
     char num = 0;
-    if(D&1>=1){num++;}
-    if(D&2>=1){num++;}
-    if(D&4>=1){num++;}
-    if(D&8>=1){num++;}
+    if((D&1)>=1){num++;}
+    if((D&2)>=1){num++;}
+    if((D&4)>=1){num++;}
+    if((D&8)>=1){num++;}
     return num;
 }
 
@@ -29,15 +29,15 @@ void output_LED(char onled){
     char offled = LED_num - onled;
     if(aa){
         for(char i=1;i<=offled;i++){
-        cout << "o ";
+        cout << "0 ";
         }
         for(char i=1;i<=onled;i++){
-            cout << "0 ";
+            cout << "1 ";
         }
         aa = false;
     }else{
-        for(char i=1;i<LED_num;i++){
-            cout << "o ";
+        for(char i=1;i<=LED_num;i++){
+            cout << "0 ";
         }
         aa = true;
     }
@@ -111,16 +111,16 @@ int main(int argc,char *argv[]){
     init_instructions();
     //execute
     cout << "----------------execute code---------------------" << endl;
-
+    
 
     while(emu->registers[C]<=0x0f&&readonlyflag==false){
         unsigned char Mcode = emu->memory[emu->registers[C]];
         unsigned char opcode = Mcode >> 4;
+        instructions[opcode](emu);
         if(timerflag){
             output_LED(onbit_register(emu->registers[D]));
-            Sleep(500);
+            Sleep(200);
         }
-        instructions[opcode](emu);
         if(debugFlag){
             dump_registers(emu);
             getchar();
