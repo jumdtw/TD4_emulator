@@ -1,16 +1,48 @@
 #include<string.h>
 #include<stdlib.h>
 #include<bitset>
+#include<windows.h>
 #include"graphic.hpp"
 #include"TD4_emu.hpp"
 #include"instruction.hpp"
 #include"debug.hpp"
 
+bool aa = true;
 
 TD4_emulator* init_emulator(){
     TD4_emulator *emu = new TD4_emulator;
     cout << "init registers" << endl;
     return emu;
+}
+
+char onbit_register(char D){
+    char num = 0;
+    if(D&1>=1){num++;}
+    if(D&2>=1){num++;}
+    if(D&4>=1){num++;}
+    if(D&8>=1){num++;}
+    return num;
+}
+
+void output_LED(char onled){
+    char LED_num = 4;
+    char offled = LED_num - onled;
+    if(aa){
+        for(char i=1;i<=offled;i++){
+        cout << "o ";
+        }
+        for(char i=1;i<=onled;i++){
+            cout << "0 ";
+        }
+        aa = false;
+    }else{
+        for(char i=1;i<LED_num;i++){
+            cout << "o ";
+        }
+        aa = true;
+    }
+    
+    cout << "\r";
 }
 
 int Read_binaryfile(char *filename,TD4_emulator *emu){
@@ -41,7 +73,8 @@ void Delete_emu(TD4_emulator* emu){
 
 
 int main(int argc,char *argv[]){
-    bool debugFlag = false;
+    
+    bool debugFlag = false,timerflag = false,readonlyflag = false;
     char *filename;
     if(argc>=2){
         for(int i=0;i<argc;i++){
@@ -56,6 +89,12 @@ int main(int argc,char *argv[]){
                 }
                 if(*p=='f'){
                     filename = argv[i+1];
+                }
+                if(*p=='t'){
+                    timerflag = true;
+                }
+                if(*p=='r'){
+                    readonlyflag = true;
                 }
             }
         }
@@ -72,48 +111,15 @@ int main(int argc,char *argv[]){
     init_instructions();
     //execute
     cout << "----------------execute code---------------------" << endl;
-    
-    /*
-    unsigned char oprand = ADD_A_IM;
-    unsigned char asmcode = (oprand << 4) + 0x1;
-    emu->memory[0] = asmcode;
-    oprand = MOV_B_IM;
-    asmcode = (oprand << 4) + 0x5;
-    emu->memory[1] = asmcode;
-    oprand = MOV_A_B;
-    asmcode = (oprand << 4) + 0x0;
-    emu->memory[2] = asmcode;
-    oprand = MOV_B_A;
-    asmcode = (oprand << 4) + 0x0;
-    emu->memory[3] = asmcode;
-    oprand = ADD_B_IM;
-    asmcode = (oprand << 4) + 0x1;
-    emu->memory[4] = asmcode;
-    oprand = IN_A;
-    asmcode = (oprand << 4) + emu->input_date;
-    emu->memory[5] = asmcode;
-    oprand = IN_B;
-    asmcode = (oprand << 4) + emu->input_date;
-    emu->memory[6] = asmcode;
-    oprand = OUT_IM;
-    asmcode = (oprand << 4) + 0xf;
-    emu->memory[7] = asmcode;
-    oprand = OUT_B;
-    asmcode = (oprand << 4) + 0x0;
-    emu->memory[8] = asmcode;
-    oprand = ADD_A_IM;
-    asmcode = (oprand <<4 ) + 0xf;
-    emu->memory[9] = asmcode;
-    oprand = JNC;
-    asmcode = (oprand << 4) + 0xD;
-    emu->memory[10] = asmcode;
-    */
 
 
-    while(emu->registers[C]<=0x0f){
+    while(emu->registers[C]<=0x0f&&readonlyflag==false){
         unsigned char Mcode = emu->memory[emu->registers[C]];
         unsigned char opcode = Mcode >> 4;
-        cout << int(emu->registers[C]) << ",    ";
+        if(timerflag){
+            output_LED(onbit_register(emu->registers[D]));
+            Sleep(500);
+        }
         instructions[opcode](emu);
         if(debugFlag){
             dump_registers(emu);

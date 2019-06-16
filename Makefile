@@ -3,7 +3,8 @@ OBJS = TD4_emu_main.o instruction.o debug.o
 HEAD = TD4_emu.hpp
 CFLAGS += -Wall -g
 TARGET = TD4.exe
-BINFILE = TD4bin.td
+TESTBINFILE = TD4bin
+TIMEFILE = timefile
 RUNOPTION = -d -f 
 DEL = del
 
@@ -13,11 +14,18 @@ DEL = del
 $(TARGET) : $(OBJS) $(HEAD) Makefile
 	$(CC) -o $@ $(OBJS)
 
-run : $(TARGET) $(BINFILE)
-	$(TARGET) $(RUNOPTION) $(BINFILE)
+run : $(TARGET) $(TESTBINFILE)
+	$(TARGET) $(RUNOPTION) $(TESTBINFILE)
 
-nodebugrun : $(TARGET) $(BINFILE)
-	$(TARGET) -f $(BINFILE)
+nodebugrun : $(TARGET) $(TESTBINFILE)
+	$(TARGET) -f $(TESTBINFILE)
+
+runtimer : $(TARGET) $(TIMEFILE)
+	$(TARGET) -t -f $(TIMEFILE)
+
+readmemory : $(TARGET) $(TIMEFILE)
+	$(TARGET) -r -f $(TIMEFILE)
+
 
 clean :
 	$(DEL) $(OBJS) 

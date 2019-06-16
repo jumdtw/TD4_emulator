@@ -1,6 +1,7 @@
 #include"TD4_emu.hpp"
 #include"graphic.hpp"
 #include<bitset>
+#include<stdio.h>
 
 void dump_registers(TD4_emulator *emu){
     cout << "----------registers dump-----------" << endl;
@@ -16,7 +17,8 @@ void dump_registers(TD4_emulator *emu){
 void dump_memory(TD4_emulator *emu){  
     cout << "-----------memory dump ---------" << endl;
     for(int i=0;i<16;i++){
-        cout << "memory " << i  << " = " << bitset<8>(emu->memory[i]) << endl; 
+        cout << "memory " << i  << " = " << bitset<8>(emu->memory[i]) << " : " ;
+        printf("%2x\n",emu->memory[i]); 
     }
     cout << "--------------------------------" << endl; 
     cout << "\n" << endl; 
